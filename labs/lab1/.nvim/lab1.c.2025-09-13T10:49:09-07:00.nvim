@@ -1,0 +1,10 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+
+int main(){
+char* str;
+size_t size;
+
+getline(&str, &size, stdin);
+printf("%s",str); 
+}
