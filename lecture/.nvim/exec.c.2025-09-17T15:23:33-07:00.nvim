@@ -1,0 +1,12 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+  int pid = fork();
+  if (pid) {
+    execl("/bin/ls", "/bin/ls", "-l", (char *)NULL);
+  } else {
+    char* args[] = {"/bin/ls", "-a", "-l", "-h"};
+    execv("/bin/ls", args);
+  }
+}

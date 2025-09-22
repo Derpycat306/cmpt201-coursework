@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
+int main() {
+  while (1) {
+    int pid = fork();
+    if (pid) {
+      int wstatus;
+      if (waitpid(pid, &wstatus, 0) == -1) {
+        printf("Exec failure\n");
+      }
+    } else {
+      printf("Enter programs to run.\n> ");
+      char input[50];
+      scanf("%s", input);
+      if(execl(input, input, (char *)NULL) == -1){
+        
+      }
+      return 0;
+    }
+  }
+}

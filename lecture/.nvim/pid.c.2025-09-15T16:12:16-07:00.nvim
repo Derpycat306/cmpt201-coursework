@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+  int PID = getpid();
+  int PPID = getppid();
+  printf("Start PID=%i, parent PID=%i\n", PID, PPID);
+  int i = fork();
+  if (i){
+    printf("PARENT PID=%i, child PID=%i\n", PID, i);
+  }
+  else{
+    PID = getpid();
+    PPID = getppid();
+    printf("CHILD PID=%i, parent PID=%i\n", PID, PPID);
+  }
+}

@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <sys/wait.h>
+#include <unistd.h>
+int main() {
+  while (1) {
+    int pid = fork();
+    if (pid) {
+      int wstatus;
+      wait(&wstatus);
+    } else {
+      char input[50];
+      scanf("%s", input);
+      execl(input, input, (char *)NULL);
+      return 0;
+    }
+  }
+}

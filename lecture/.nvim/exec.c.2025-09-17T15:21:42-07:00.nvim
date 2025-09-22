@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+  int pid = fork();
+  if (pid) {
+    execl("/bin/ls", "/bin/ls", "-l");
+  } else {
+    printf("child");
+  }
+}
