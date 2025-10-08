@@ -1,0 +1,42 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void clear(char *strings[]) {
+  for (int i = 0; i < 5; i++) {
+    if (strings[i] != NULL)
+      strings[i] = NULL;
+  }
+}
+
+void print_last_5(char *strings[], int count) {
+  int start = count >= 5 ? count - 5 : 0;
+  for (int i = start; i < count; i++) {
+    printf("%s\n", strings[i % 5]);
+  }
+}
+
+int main() {
+  char *strings[5];
+  char count = 0;
+
+  while (1) {
+    printf("Enter input: ");
+    char *line = NULL;
+    size_t len = 0;
+
+    if (getline(&line, &len, stdin) == -1)
+      break;
+
+    free(strings[count % 5]);
+    strings[count % 5] = line;
+    count++;
+
+    if (strcmp(line, "print") == 0) {
+      print_last_5(strings, count);
+      count = 0;
+    }
+
+  }
+}
