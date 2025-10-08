@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <wait.h>
+#include <unistd.h>
 
 int main() {
   int pid = fork();
@@ -12,10 +12,8 @@ int main() {
       exit(1);
     }
 
-    if (WIFEXITED(wstatus)) {
-      printf("child done with exit status: %d\n", WEXITSTATUS(wstatus));
-    } else {
-      printf("child did not exit normally.\n");
+    if(WIFEXITED(wstatus)) {
+      printf("child done with exit status: %d/n", WEXITSTATUS(wstatus));
     }
   } else {
     char *args[] = {"/bin/ls", "-a", "-l", "-h", NULL};

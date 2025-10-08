@@ -1,21 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <wait.h>
+#include <sys/wait.h>
 
 int main() {
   int pid = fork();
   if (pid) {
     int wstatus = 0;
-    if (waitpid(pid, &wstatus, 0) == 1) {
+    if(waitpid(pid, &wstatus, 0) == 1) {
       perror("waitpid");
       exit(1);
-    }
-
-    if (WIFEXITED(wstatus)) {
-      printf("child done with exit status: %d\n", WEXITSTATUS(wstatus));
-    } else {
-      printf("child did not exit normally.\n");
     }
   } else {
     char *args[] = {"/bin/ls", "-a", "-l", "-h", NULL};
