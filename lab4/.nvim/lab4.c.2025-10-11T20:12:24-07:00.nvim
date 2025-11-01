@@ -1,0 +1,64 @@
+#define _DEFAULT_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#define BUF_SIZE 100
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+struct header {
+  uint64_t size;
+  struct header *next;
+};
+
+void print_out(char *format, void *data, size_t data_size) {
+  char buf[BUF_SIZE];
+  ssize_t len = snprintf(buf, BUF_SIZE, format,
+                         data_size == sizeof(uint64_t) ? *(uint64_t *)data
+                                                       : *(void **)data);
+  if (len < 0) {
+    perror("snprintf");
+  }
+  write(STDOUT_FILENO, buf, len);
+}
+
+void printbytes(void *start, int bytes) {
+  unsigned char *p = start;
+  char buff[5];
+  for (int i = 0; i < bytes; i++) {
+    int len = snprintf(buff, sizeof(buff), "%u\n", p[i]);
+    write(STDOUT_FILENO, buff, len);
+  }
+}
+
+int main() {
+  int blocksize = 128;
+  int datasize = blocksize - sizeof(struct header);
+
+  void *start = sbrk(blocksize * 2);
+
+  struct header *h1 = (struct header *)start;
+  struct header *h2 = (struct header *)start + blocksize;
+
+  print_out("first block:        %p\n", &h1, sizeof(h1));
+  print_out("second block:       %p\n", &h2, sizeof(h2));
+
+  void *d1 = h1 + sizeof(struct header);
+  void *d2 = h2 + sizeof(struct header);
+
+  h1->size = blocksize;
+  h1->next = NULL;
+  print_out("first block size:   %i\n", &h1->size, sizeof(&blocksize));
+  print_out("first block next:   %p\n", &h1->next, sizeof(h2));
+
+  h2->size = blocksize;
+  h2->next = h1;
+  print_out("second block size:  %i\n", &h2->size, sizeof(&blocksize));
+  print_out("second block next:  %p\n", &h2->next, sizeof(h2));
+
+  memset(d1, 0, datasize);
+  memset(d2, 1, datasize);
+
+  printbytes(h1 + sizeof(struct header), datasize);
+  printbytes(h2 + sizeof(struct header), datasize);
+}

@@ -1,0 +1,101 @@
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+struct header {
+  uint64_t size;
+  struct header *next;
+  int id;
+};
+
+void initialize_block(struct header *block, uint64_t size, struct header *next,
+                      int id) {
+  block->size = size;
+  block->next = next;
+  block->id = id;
+}
+
+int find_first_fit(struct header *free_list_ptr, uint64_t size) {
+  while (free_list_ptr != NULL) {
+    if (free_list_ptr->size >= size)
+      return free_list_ptr->id;
+    else {
+      free_list_ptr = free_list_ptr->next;
+    }
+  }
+  return -1;
+}
+
+int find_best_fit(struct header *free_list_ptr, uint64_t size) {
+  int best_fit_id = -1;
+  uint64_t best_size = UINT64_MAX;
+  while (free_list_ptr != NULL) {
+    int s = free_list_ptr->size;
+    if (s > size) {
+      if (s > size && s < best_size) {
+        best_fit_id = free_list_ptr->id;
+        best_size = s;
+      }
+    }
+    free_list_ptr = free_list_ptr->next;
+  }
+  return best_fit_id;
+}
+
+int find_worst_fit(struct header *free_list_ptr, uint64_t size) {
+  int worst_fit_id = -1;
+  int worst_size = -1;
+  while (free_list_ptr != NULL) {
+    int s = free_list_ptr->size;
+    if (s > size && s > worst_size) {
+      worst_fit_id = free_list_ptr->id;
+      worst_size = s;
+    }
+    free_list_ptr = free_list_ptr->next;
+  }
+  return worst_fit_id;
+}
+
+int main(void) {
+
+  struct header *free_block1 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block2 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block3 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block4 = (struct header *)malloc(sizeof(struct header));
+  struct header *free_block5 = (struct header *)malloc(sizeof(struct header));
+
+  initialize_block(free_block1, 6, free_block2, 1);
+  initialize_block(free_block2, 12, free_block3, 2);
+  initialize_block(free_block3, 24, free_block4, 3);
+  initialize_block(free_block4, 8, free_block5, 4);
+  initialize_block(free_block5, 4, NULL, 5);
+
+  struct header *free_list_ptr = free_block1;
+
+  int first_fit_id = find_first_fit(free_list_ptr, 7);
+  int best_fit_id = find_best_fit(free_list_ptr, 7);
+  int worst_fit_id = find_worst_fit(free_list_ptr, 7);
+
+  printf("The ID for First-Fit algorithm is: %i\n", first_fit_id);
+  printf("The ID for Best-Fit algorithm is: %i\n", best_fit_id);
+  printf("The ID for Worst-Fit algorithm is: %i\n", worst_fit_id);
+
+  return 0;
+}
+
+// here is an o(n) time implementation.
+//
+// I will loop through all nodes in the linked list holding onto a
+// pointer to the node immediatly before it, and do two checks.
+// first, I will check if the pointer + size of the node is the address
+// of the newly added one. if so, I will increment the size of that
+// node by the size of the new space, then set the new pointer to that
+// node, thus merging it into the previous one. second, I would check
+// to see if the address of the node is equal to the address + size of
+// the new node. if so, I would remove the node from the list through
+// the prev->next = prev->next->next method, then increment the size of
+// the new node by that node's size, thus merging the node in front
+// into the one behind. at the end of the list, I will append the new
+// node. this implementation will merge the new node with any free ones
+// immediately behind and in front of it.
+//
