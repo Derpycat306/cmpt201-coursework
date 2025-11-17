@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+
+int main() {
+  printf("Server");
+
+  // socket
+  int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (socket_fd == -1) {
+    perror("socket");
+    exit(EXIT_FAILURE);
+  }
+
+  // bind
+  struct sockaddr_un sockstruct;
+  sockstruct.sun_family = AF_UNIX;
+  sockstruct.sunpath = ;
+  if (bind(socket_fd, &sockstruct, 1) == -1) {
+    perror("bind");
+    exit(EXIT_FAILURE);
+  }
+
+  // listen
+
+  // accept
+
+  // read
+
+  // close
+  return 0;
+}

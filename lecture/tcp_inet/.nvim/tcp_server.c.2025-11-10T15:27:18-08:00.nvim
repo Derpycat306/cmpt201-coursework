@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <sys/socket.h>
+
+int main() {
+  printf("Server");
+
+  // socket
+  int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if(socket_fd == -1){
+    perror("socket");
+  }
+
+  // bind
+  
+
+  // listen
+
+  // accept
+
+  // read
+
+  // close
+  return 0;
+}

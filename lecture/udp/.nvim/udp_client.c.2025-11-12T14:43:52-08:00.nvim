@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+int main() {
+  // socket
+  int socket_fd = socket(AF_UNIX, SOCK_DGRAM, 0);
+  if (socket_fd == -1) {
+    perror("socket");
+    exit(EXIT_FAILURE);
+  }
+
+  // address
+  struct sockaddr_un addr;
+  addr.sun_family = AF_UNIX;
+
+  // write
+  while (1) {
+    char msg[100];
+    int len = read(STDIN_FILENO, msg, 100);
+
+    msg[len--] = '\0';
+
+    if (len == 4 && strncmp(msg, "exit", 4) == 0)
+      break;
+
+    if (sendto(socket_fd, msg, len, 0, 0, 0) == -1) {
+      perror("write");
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  // close
+  close(socket_fd);
+  return 0;
+}

@@ -1,0 +1,26 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+
+char *message;
+
+void *func(void *arg) {
+  sleep(1);
+  printf("hello, I am a thread.\n");
+  message = "hello, I am also a thread.";
+  return NULL;
+}
+
+void *func2(void *arg) {
+  printf("%s\n", message);
+  return NULL;
+}
+
+int main(void) {
+  pthread_t thread1;
+  pthread_create(&thread1, NULL, func, NULL);
+  pthread_detach(thread1);
+  printf("done");
+  sleep(2);
+  return 0;
+}

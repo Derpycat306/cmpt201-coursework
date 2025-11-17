@@ -1,0 +1,26 @@
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+#include <stdio.h>
+#include <sys/socket.h>
+
+int main() {
+  printf("Client");
+
+  //socket
+  
+
+  //bind
+  
+
+  //connect
+  
+
+  //write
+  
+
+  //close
+  return 0;
+}

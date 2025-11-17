@@ -1,0 +1,20 @@
+#include <stdio.h>
+
+int main() {
+  printf("Client");
+
+  //socket
+  
+
+  //bind
+  
+
+  //connect
+  
+
+  //write
+  
+
+  //close
+  return 0;
+}

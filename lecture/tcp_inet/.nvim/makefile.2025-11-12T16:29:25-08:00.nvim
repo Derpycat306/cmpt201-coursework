@@ -1,0 +1,6 @@
+all:
+	clang -o server inettcp_server.c
+	clang -o client inettcp_client.c
+
+clean:
+	rm client server

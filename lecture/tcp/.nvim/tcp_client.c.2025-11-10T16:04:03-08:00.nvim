@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+
+int main() {
+  printf("Client");
+
+  // socket
+  int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (socket_fd == -1) {
+    perror("socket");
+    exit(EXIT_FAILURE);
+  }
+
+  // bind
+  struct sockaddr_un sockstruct;
+  sockstruct.sun_family = AF_UNIX;
+  snprintf(sockstruct.sun_path, 108, "socketfun");
+  if (bind(socket_fd, (struct sockaddr *)&sockstruct,
+           sizeof(struct sockaddr_un)) == -1) {
+    perror("bind");
+    exit(EXIT_FAILURE);
+  }
+
+  // connect
+  if(connect(sockstruct, (struck sockaddr_un *)&sockstruct, sizeof(struct sockaddr_un)) == -1){
+
+  }
+
+  // write
+
+  // close
+  return 0;
+}

@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+#include <string.h>
+
+int main() {
+  // socket
+  int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (socket_fd == -1) {
+    perror("socket");
+    exit(EXIT_FAILURE);
+  }
+
+  remove("socketfun");
+
+  // bind
+  struct sockaddr_un sockstruct;
+  sockstruct.sun_family = AF_UNIX;
+  snprintf(sockstruct.sun_path, 108, "socketfun");
+  if (bind(socket_fd, (struct sockaddr *)&sockstruct,
+           sizeof(struct sockaddr_un)) == -1) {
+    perror("bind");
+    exit(EXIT_FAILURE);
+  }
+
+  // listen
+  if (listen(socket_fd, 1) == -1) {
+    perror("listen");
+    exit(EXIT_FAILURE);
+  }
+
+  // accept
+  int connect_fd = accept(socket_fd, NULL, NULL);
+  if (connect_fd == -1) {
+    perror("accept");
+    exit(EXIT_FAILURE);
+  }
+
+  // read
+  while (1) {
+    char buff[100];
+    int len = read(connect_fd, buff, 100);
+    if (strcmp(buff, "exit") == 0)
+      break;
+    write(STDOUT_FILENO, buff, len);
+  }
+
+  // close
+  close(socket_fd);
+  close(connect_fd);
+  return 0;
+}

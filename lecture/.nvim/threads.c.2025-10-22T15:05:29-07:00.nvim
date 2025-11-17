@@ -1,0 +1,32 @@
+#include <pthread.h>
+#include <stdio.h>
+#include <unistd.h>
+
+static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+char *message;
+
+void *func1(void *arg) {
+  pthread_mutex_lock(&lock);
+  sleep(2);
+  printf("hello, I am a thread.\n");
+  message = "hello, I am also a thread.";
+  pthread_mutex_unlock(&lock);
+  pthread_exit(0);
+}
+
+void *func2(void *arg) {
+  pthread_mutex_lock(&lock);
+  printf("%s\n", message);
+  pthread_mutex_unlock(&lock);
+  pthread_exit(0);
+}
+
+int main(void) {
+  pthread_t thread1, thread2;
+  pthread_create(&thread1, NULL, func1, NULL);
+  pthread_create(&thread2, NULL, func2, NULL);
+  pthread_join(thread1, NULL);
+  pthread_join(thread2, NULL);
+  printf("done");
+  return 0;
+}
